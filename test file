@@ -1,0 +1,75 @@
+.data
+str1:  .asciiz  "\n============================================"
+str2:  .asciiz  "\nInput a number in decimal form:\n\n\n\n"
+str3:  .asciiz "\nThe number "
+str4:  .asciiz " in binary is:\n\n\n\n\n"
+
+	.text
+main:
+
+		li $v0, 4
+		la $a0, str1
+	syscall
+	
+		li $v0, 4
+		la $a0, str2
+	syscall
+	
+		li $v0, 5
+	syscall
+	
+		add $t1, $0, $v0
+		
+		
+		li $v0, 4
+		la $a0, str3
+	syscall
+	
+		li $v0, 1
+		add $a0, $t1, $0
+	syscall	
+				
+		add $a0, $t1, $0
+	
+jal BaseChange
+	
+		add $t5, $v0, $0
+		li $t6, 32
+		sub $t6, $t5, $t2
+	
+	
+		li $v0, 4
+		la $a0, str4
+	syscall
+	
+zeroloop:	beq $t6, $0, printansw
+		li $v0, 1
+		li $a0, 0
+	syscall
+	
+		addi $t6,$t6, -1
+		j zeroloop
+
+printansw:  	beq $t2, $0, exit
+
+exit:		li $v0, 4
+		la $a0, str1
+	syscall
+		li $v0, 10
+	syscall
+#------------------------------------------
+BaseChange:
+	add $t1, $a0, $0
+	
+counterloop:	beq $t1, $0, return
+		li $t7, 2
+		div $t1, $t7
+		mfhi $t8
+		mflo $t1
+		addi $sp, $sp, -4
+		sw $t8, 0($sp)
+		add $t8, $t8, 0
+				j counterloop
+return:	
+		add $v0, $t8, $0
+		jr	$ra
